@@ -22,7 +22,7 @@ public class Stock {
     private boolean hold;
     private Map<Double, Double> purchaseMap;
     private Map<Double, Double> saleMap;
-
+    //add
 
     public Stock(String symbol, double purchasePrice, double quantity){
         this.hold = true;
