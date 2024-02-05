@@ -54,7 +54,7 @@ public class PrintPage {
                     brokerage.sortByGrowthPercentage();
                 }
                 printedStocks.append(brokerage.sortedOutput());
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Sorted by " + sorting.getItemAt(sorting.getSelectedIndex()) + ".");
+                //JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Sorted by " + sorting.getItemAt(sorting.getSelectedIndex()) + ".");
             }
         });
         back.addActionListener(new ActionListener() {

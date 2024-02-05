@@ -62,7 +62,8 @@ public class BrokerageTest {
         System.out.println(brokerage.initialOutputForApp());
     }
     @Test
-    public void undoOnePurchaseForNoOutput(){
+    public void undoOnePurchaseForNoOutputOfThatStock(){
+        brokerage.purchase("GS",  300.0, 7);
         brokerage.purchase("NKE", 100.0, 7);
         brokerage.undo();
         System.out.println(brokerage.initialOutputForApp());
@@ -86,6 +87,19 @@ public class BrokerageTest {
         brokerage.purchase("NKE", 100.0, 7);
         brokerage.sellSomeShares("NKE", 110.0, 2);
         brokerage.undo();
+        System.out.println(brokerage.initialOutputForApp());
+    }
+    @Test
+    public void sellSomeSharesOfMultipleStocks(){
+        brokerage.purchase("NKE",  100.0, 7);
+        brokerage.purchase("AAPL", 200.0, 5);
+        brokerage.purchase("NVDA", 300.0, 2);
+        brokerage.purchase("GS",  300.0, 7);
+        brokerage.purchase("AMZN", 120.0, 5);
+        brokerage.purchase("BA", 220.0, 2);
+        brokerage.sellSomeShares("NKE", 110.0, 2);
+        brokerage.sellSomeShares("GS", 250, 1);
+        brokerage.sellSomeShares("BA", 220, 1);
         System.out.println(brokerage.initialOutputForApp());
     }
     @Test

@@ -8,7 +8,6 @@ public class Brokerage {
     private double principle;
     private double totalCurrentHoldingsInvestment;
     private double totalCurrentValue;
-    private double totalGrowthValue;
     private double totalSaleValue;
     public Map<String, Stock> boughtStocks;
     public Map<String, Stock> soldStocks;
@@ -123,14 +122,12 @@ public class Brokerage {
     private void collectTotals(){
         totalCurrentHoldingsInvestment = 0;
         totalCurrentValue = 0;
-        totalGrowthValue = 0;
         totalSaleValue = 0;
         for(Stock stock : stocks){
             if(stock.isHold()){
                 totalCurrentHoldingsInvestment += stock.getTotalInvestment();
             }
             totalCurrentValue += stock.getTotalCurrentValue();
-            totalGrowthValue += stock.getGrowthValue();
             totalSaleValue += stock.getSaleValue();
         }
     }
@@ -276,9 +273,6 @@ public class Brokerage {
     }
     private double getCurrentHoldingsValue(){
         return totalCurrentValue;
-    }
-    private double getTotalGrowthValue(){
-        return totalGrowthValue;
     }
     private double getTotalSaleValue(){
         return totalSaleValue;
