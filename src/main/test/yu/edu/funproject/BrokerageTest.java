@@ -2,11 +2,6 @@ package yu.edu.funproject;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import yahoofinance.YahooFinance;
-import yu.edu.funproject.Brokerage;
-
-import java.io.IOException;
-import java.math.BigDecimal;
 
 public class BrokerageTest {
     private Brokerage brokerage;
@@ -19,9 +14,6 @@ public class BrokerageTest {
         brokerage.purchase("NKE",  100.0, 7);
         brokerage.purchase("AAPL", 200.0, 5);
         brokerage.purchase("NVDA", 300.0, 2);
-        //String s = brokerage.outputForApp();
-        //System.out.println(s);
-        //brokerage.sortBySymbol();
         System.out.println(brokerage.initialOutputForApp());
     }
     @Test

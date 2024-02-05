@@ -56,7 +56,7 @@ public class Stock {
     public double getCostBasis(){
         double total = 0.0;
         for(Map.Entry<Double, Double> entry: purchaseMap.entrySet()){
-            total = total + (entry.getKey()*entry.getValue());
+            total = total + (entry.getKey() * entry.getValue());
         }
         return total/getQuantity();
     }
@@ -113,10 +113,18 @@ public class Stock {
     }
     public void sellSomeShares(double quantity, double salePrice){
         //saleMap.put(quantity, salePrice);
-        purchaseMap.put(this.quantity, 0.0);
+        adjustPurchaseMap();
+        purchaseMap.put(quantity, -1 * salePrice);
         this.quantity -= quantity;
-        purchaseMap.put(this.quantity, purchasePrice);
+        //purchaseMap.put(this.quantity, purchasePrice);
         //hold = false;
+    }
+    private void adjustPurchaseMap(){
+        double costBasis = getCostBasis();
+        for(Map.Entry<Double, Double> entry: purchaseMap.entrySet()){
+            purchaseMap.put(entry.getKey(), 0.0);
+        }
+        purchaseMap.put(getQuantity(), costBasis);
     }
     public void combineStocks(Stock otherStock){
         if(!getSymbol().equals(otherStock.getSymbol()) || !statusToString().equals(otherStock.statusToString())){
