@@ -22,8 +22,6 @@ public class Stock {
     private boolean hold;
     private Map<Double, Double> purchaseMap;
     private Map<Double, Double> saleMap;
-    private static final Color RED = new Color(255, 0, 0);
-    private static final Color GREEN = new Color(0, 204, 0);
 
 
     public Stock(String symbol, double purchasePrice, double quantity){
