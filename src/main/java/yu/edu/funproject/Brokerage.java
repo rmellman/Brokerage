@@ -29,12 +29,29 @@ public class Brokerage {
             //this stock has been bought already. Buy more.
             stock.additionalPurchase(purchasePrice, quantity);
             boughtStocks.put(symbol, stock);
+            Stock finalStock = stock;
+            Function<String, Boolean> undo = (String s) -> {
+                Stock undoStock = finalStock;
+                undoStock.sellSomeShares(quantity, purchasePrice);
+                return true;
+            };
+            //push command onto stack
+            commandStack.push(new Command(symbol, undo));
         }
         if(stock == null) {
             //this stock has not yet been bought. Buy anew.
             stock = new Stock(symbol, purchasePrice, quantity);
             stocks.add(stock);
             boughtStocks.put(symbol, stock);
+            Stock finalStock1 = stock;
+            Function<String, Boolean> undo = (String s) -> {
+                Stock undoStock = finalStock1;
+                undoStock.sellSomeShares(quantity, purchasePrice);
+                stocks.remove(finalStock1);
+                return true;
+            };
+            //push command onto stack
+            commandStack.push(new Command(symbol, undo));
         }
     }
     public void sellAllShares(String symbol, double salePrice){
@@ -77,18 +94,20 @@ public class Brokerage {
                 sellAllShares(symbol, salePrice);
                 return;
             }
-            Stock toSell = soldStocks.get(symbol);
-            if(toSell == null){
-                //this stock has not been sold yet. Make a new stock to add to soldStocks.
-                toSell = stock;
-                //set quantity of sold stocks to zero
-                toSell.setQuantityToZero();
-            }
-            toSell.sellSomeShares(quantity, salePrice);
-            //edit the bought stock
-            stock.subtractFromQuantity(quantity);
-            soldStocks.put(symbol, toSell);
-            stocks.add(toSell);
+            Function<String, Boolean> undo = (String s) -> {
+                //needs work
+                Stock undoStock = stock;
+                undoStock.additionalPurchase(salePrice, quantity);
+                boughtStocks.put(symbol, stock);
+                return true;
+            };
+            //push command onto stack
+            commandStack.push(new Command(symbol, undo));
+            stock.sellSomeShares(quantity, salePrice);
+            Stock sold = new Stock(symbol, stock.getPurchasePrice(), quantity);
+            sold.sellAllShares(salePrice);
+            soldStocks.put(symbol, sold);
+            stocks.add(sold);
         }
         if(stock == null) {
             //stock is not bought; can't be sold
@@ -102,6 +121,10 @@ public class Brokerage {
         commandStack.pop().undo();
     }
     private void collectTotals(){
+        totalCurrentHoldingsInvestment = 0;
+        totalCurrentValue = 0;
+        totalGrowthValue = 0;
+        totalSaleValue = 0;
         for(Stock stock : stocks){
             if(stock.isHold()){
                 totalCurrentHoldingsInvestment += stock.getTotalInvestment();

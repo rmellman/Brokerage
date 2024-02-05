@@ -112,9 +112,11 @@ public class Stock {
         hold = false;
     }
     public void sellSomeShares(double quantity, double salePrice){
-        saleMap.put(quantity, salePrice);
-        this.quantity += quantity;
-        hold = false;
+        //saleMap.put(quantity, salePrice);
+        purchaseMap.put(this.quantity, 0.0);
+        this.quantity -= quantity;
+        purchaseMap.put(this.quantity, purchasePrice);
+        //hold = false;
     }
     public void combineStocks(Stock otherStock){
         if(!getSymbol().equals(otherStock.getSymbol()) || !statusToString().equals(otherStock.statusToString())){

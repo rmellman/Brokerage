@@ -54,7 +54,7 @@ public class PrintPage {
                     brokerage.sortByGrowthPercentage();
                 }
                 printedStocks.append(brokerage.sortedOutput());
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Sorting by " + sorting.getItemAt(sorting.getSelectedIndex()) + ".");
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Sorted by " + sorting.getItemAt(sorting.getSelectedIndex()) + ".");
             }
         });
         back.addActionListener(new ActionListener() {
@@ -69,7 +69,6 @@ public class PrintPage {
                 printedStocks.setText("");
                 brokerage.reverseOutput();
                 printedStocks.append(brokerage.sortedOutput());
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Reversing the order of the listed stocks");
             }
         });
         refreshButton.addActionListener(new ActionListener() {
@@ -77,7 +76,7 @@ public class PrintPage {
             public void actionPerformed(ActionEvent e) {
                 printedStocks.setText("");
                 printedStocks.append(brokerage.initialOutputForApp());
-                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Refreshing the listed stocks");
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Refreshed the listed stocks");
             }
         });
     }

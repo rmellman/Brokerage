@@ -77,6 +77,8 @@ public class MenuPage {
                 try {
                     brokerage.sellAllShares(symbol3.getText(), Double.parseDouble(price3.getText()));
                     JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "You have sold all shares of " + symbol3.getText() + " at $" + price3.getText() + ".");
+                    symbol3.setText("");
+                    price3.setText("");
                 }
                 catch (Exception s){
                     JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "Please enter correctly formatted input.");

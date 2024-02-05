@@ -75,6 +75,20 @@ public class BrokerageTest {
         System.out.println(brokerage.initialOutputForApp());
     }
     @Test
+    public void buyOneStockBuySomeMoreThenUndo(){
+        brokerage.purchase("NKE", 100.0, 7);
+        brokerage.purchase("NKE", 90, 2);
+        brokerage.undo();
+        System.out.println(brokerage.initialOutputForApp());
+    }
+    @Test
+    public void buyOneStockSellSomeThenUndo(){
+        brokerage.purchase("NKE", 100.0, 7);
+        brokerage.sellSomeShares("NKE", 110.0, 2);
+        brokerage.undo();
+        System.out.println(brokerage.initialOutputForApp());
+    }
+    @Test
     public void sortBySymbol(){
         brokerage.purchase("NKE",  100.0, 7);
         brokerage.purchase("AAPL", 200.0, 5);
