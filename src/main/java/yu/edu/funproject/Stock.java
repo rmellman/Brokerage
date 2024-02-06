@@ -13,6 +13,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class Stock {
     private String symbol;
@@ -103,7 +104,12 @@ public class Stock {
         }
 
     }
-    public void additionalPurchase(double purchasePrice, double quantity){
+    public void additionalPurchase(double purchasePrice, double quantity, boolean isUndo){
+        if(isUndo) {
+            adjustSaleMap();
+            saleMap.put(this.quantity, 0.0);
+            hold = true;
+        }
         this.quantity += quantity;
         purchaseMap.put(quantity, purchasePrice);
     }
@@ -111,10 +117,11 @@ public class Stock {
         saleMap.put(quantity, salePrice);
         hold = false;
     }
-    public void sellSomeShares(double quantity, double salePrice){
+    public void sellSomeShares(double quantity, double salePrice, boolean isUndo){
         //saleMap.put(quantity, salePrice);
         adjustPurchaseMap();
-        purchaseMap.put(quantity, -1 * salePrice);
+        if(isUndo) purchaseMap.put(quantity, -1 * salePrice);
+        if(!isUndo) purchaseMap.put(quantity, -1 * getCostBasis());
         this.quantity -= quantity;
         //purchaseMap.put(this.quantity, purchasePrice);
         //hold = false;
@@ -126,10 +133,20 @@ public class Stock {
         }
         purchaseMap.put(getQuantity(), costBasis);
     }
+    private void adjustSaleMap(){
+        double costBasis = getSalePrice();
+        for(Map.Entry<Double, Double> entry: saleMap.entrySet()){
+            saleMap.put(entry.getKey(), 0.0);
+        }
+        saleMap.put(getQuantity(), costBasis);
+    }
+
     public void combineStocks(Stock otherStock){
         if(!getSymbol().equals(otherStock.getSymbol()) || !statusToString().equals(otherStock.statusToString())){
             throw new IllegalArgumentException();
         }
+        otherStock.adjustPurchaseMap();
+        otherStock.adjustSaleMap();
         quantity += otherStock.getQuantity();
         purchaseMap.put(otherStock.getQuantity(), otherStock.getPurchasePrice());
         saleMap.put(otherStock.getQuantity(), otherStock.getSalePrice());
@@ -178,5 +195,18 @@ public class Stock {
         percent.setMinimumFractionDigits(2);
         return String.format("| %-10s | %-10s | %10.2f | %16s | %16s | %13s | %18s | %16s | %16s | %16s | %18s |",
                 getSymbol(), statusToString(), getQuantity(), nf.format(getCurrentPrice()), nf.format(getCostBasis()), nf.format(getSalePrice()), nf.format(getTotalInvestment()), nf.format(getTotalCurrentValue()), nf.format(getSaleValue()), nf.format(getGrowthValue()), percent.format(getGrowthPercentage()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        return hold == stock.hold && Objects.equals(symbol, stock.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol, hold);
     }
 }

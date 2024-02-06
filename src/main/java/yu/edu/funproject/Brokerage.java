@@ -26,12 +26,12 @@ public class Brokerage {
         Stock stock = boughtStocks.get(symbol);
         if(stock != null){
             //this stock has been bought already. Buy more.
-            stock.additionalPurchase(purchasePrice, quantity);
+            stock.additionalPurchase(purchasePrice, quantity, false);
             boughtStocks.put(symbol, stock);
             Stock finalStock = stock;
             Function<String, Boolean> undo = (String s) -> {
                 Stock undoStock = finalStock;
-                undoStock.sellSomeShares(quantity, purchasePrice);
+                undoStock.sellSomeShares(quantity, purchasePrice, true);
                 return true;
             };
             //push command onto stack
@@ -45,7 +45,7 @@ public class Brokerage {
             Stock finalStock1 = stock;
             Function<String, Boolean> undo = (String s) -> {
                 Stock undoStock = finalStock1;
-                undoStock.sellSomeShares(quantity, purchasePrice);
+                undoStock.sellSomeShares(quantity, purchasePrice, true);
                 stocks.remove(finalStock1);
                 return true;
             };
@@ -60,8 +60,7 @@ public class Brokerage {
             //create undo function
             Function<String, Boolean> undo = (String s) -> {
                 //needs work
-                Stock undoStock = stock;
-                undoStock.setHold(true);
+                stock.additionalPurchase(stock.getCostBasis(), 0, true);
                 boughtStocks.put(symbol, stock);
                 return true;
             };
@@ -76,7 +75,7 @@ public class Brokerage {
                 stocks.remove(toSell);
             }
             soldStocks.put(symbol, stock);
-            //set old val in bought BTree to null
+            //set old val in bought hashmap to null
             boughtStocks.put(symbol, null);
         }
         if(stock == null) {
@@ -94,15 +93,18 @@ public class Brokerage {
                 return;
             }
             Function<String, Boolean> undo = (String s) -> {
-                //needs work
-                Stock undoStock = stock;
-                undoStock.additionalPurchase(salePrice, quantity);
+                //Stock undoStock = stock;
+                stock.additionalPurchase(0, quantity, true);
                 boughtStocks.put(symbol, stock);
+                //set a new stock to "SOLD", find it and remove it.
+                Stock rmvSoldStock = new Stock(symbol, 0,0);
+                rmvSoldStock.setHold(false);
+                stocks.remove(rmvSoldStock);
                 return true;
             };
             //push command onto stack
             commandStack.push(new Command(symbol, undo));
-            stock.sellSomeShares(quantity, salePrice);
+            stock.sellSomeShares(quantity, salePrice, false);
             Stock sold = new Stock(symbol, stock.getPurchasePrice(), quantity);
             sold.sellAllShares(salePrice);
             soldStocks.put(symbol, sold);
@@ -232,7 +234,7 @@ public class Brokerage {
         rtn += bottomLineOutput();
         return rtn;
     }
-    public String firstLineOutput(){
+    private String firstLineOutput(){
         String rtn = "";
         rtn += "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
         rtn += String.format("| %-10s | %-10s | %10s | %16s | %16s | %13s | %18s | %16s | %16s | %16s | %18s |",
@@ -240,7 +242,7 @@ public class Brokerage {
         rtn += "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
         return rtn;
     }
-    public String bottomLineOutput(){
+    private String bottomLineOutput(){
         NumberFormat nf =
                 NumberFormat.getCurrencyInstance(Locale.US);
         NumberFormat percent = NumberFormat.getPercentInstance(Locale.US);
