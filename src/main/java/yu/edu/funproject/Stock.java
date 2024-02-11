@@ -1,6 +1,5 @@
 package yu.edu.funproject;
 
-import yahoofinance.YahooFinance;
 
 import javax.swing.*;
 import java.awt.*;
