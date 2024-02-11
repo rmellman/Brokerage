@@ -1,4 +1,4 @@
-Brokerage App
+# Brokerage
 
 This projects is designed to keep track of all of your investments, past and present.
 The app will do all the calculations for you, all you need to do is enter your investment details using the GUI.
